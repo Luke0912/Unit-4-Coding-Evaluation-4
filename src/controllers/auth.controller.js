@@ -1,0 +1,52 @@
+const User = require("../models/User.Model")
+
+const jwt = require("jsonwebtoken")
+const { sign } = require("jsonwebtoken")
+const { is } = require("express/lib/request")
+
+require("dotenv").config()
+
+const newToken = (user)=>{
+    return jwt,sign({user}, process.env.JWT_SECRET_KEY)
+}
+
+const register = async (req,res)=>{
+    try {
+        let user = await user.findOne({email:req.body.email})
+
+        if(user){
+            return res.status(400).send({message:"Email already there"})
+        }
+
+        user = await User.create(req.body)
+
+        const token = newToken(user)
+
+        return res.status(200).send({user,token})
+    } catch (error) {
+        res.status(400).send({message:error.message})
+    }
+}
+
+const login = async (req,res)=>{
+    try {
+        const user = await User.findOne({email:req.body.email})
+
+        if(!user){
+            return res.status(400).send("wrong email or password")
+        }
+
+        const match = user.chekPassword(req.body.password)
+
+        if(!match){
+            return res.status(400).send({message:"wrong user or password"})
+        }
+
+        const token = newToken(user)
+        return res.statu(201).send({user,token})
+    } catch (error) {
+        res.status(400).send({message:error.message})
+    }
+}
+
+module.exports = {login,register,newToken}
