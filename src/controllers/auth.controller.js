@@ -36,14 +36,14 @@ const login = async (req,res)=>{
             return res.status(400).send("wrong email or password")
         }
 
-        const match = user.chekPassword(req.body.password)
+        const match = user.checkPassword(req.body.password)
 
         if(!match){
             return res.status(400).send({message:"wrong user or password"})
         }
 
         const token = newToken(user)
-        return res.statu(201).send({user,token})
+        return res.status(201).send({user,token})
     } catch (error) {
         res.status(400).send({message:error.message})
     }
