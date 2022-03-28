@@ -12,7 +12,7 @@ const newToken = (user)=>{
 
 const register = async (req,res)=>{
     try {
-        let user = await user.findOne({email:req.body.email})
+        let user = await User.findOne({email:req.body.email})
 
         if(user){
             return res.status(400).send({message:"Email already there"})
